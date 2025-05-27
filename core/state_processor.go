@@ -18,6 +18,7 @@ package core
 
 import (
 	"fmt"
+	evmstore "github.com/ethereum/go-ethereum/proxy"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -79,6 +80,13 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 	if hooks := cfg.Tracer; hooks != nil {
 		tracingStateDB = state.NewHookedState(statedb, hooks)
 	}
+
+	var err error
+	tracingStateDB, err = evmstore.WrapStateDbWithFileLogger(tracingStateDB, block.Number().Uint64())
+	if err != nil {
+		return nil, fmt.Errorf("failed to wrap tracing state db: %v", err)
+	}
+
 	context = NewEVMBlockContext(header, p.chain, nil)
 	evm := vm.NewEVM(context, tracingStateDB, p.config, cfg)
 
