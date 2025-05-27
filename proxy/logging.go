@@ -17,7 +17,7 @@ import (
 )
 
 func WrapStateDbWithFileLogger(stateDb vm.StateDB, blk uint64) (vm.StateDB, error) {
-	f, err := os.OpenFile(fmt.Sprintf("/var/data/data/logs/state_changes_%d.log", blk), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(fmt.Sprintf("/var/data/data/logs/etheruem_state_changes_%d.log", blk), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, err
 	}
